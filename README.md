@@ -1,2 +1,2 @@
 # project-template
-A template consisting of multipe setups using Django and React
+A template consisting of multipe setups using Django and React with DRF api
