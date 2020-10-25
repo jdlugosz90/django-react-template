@@ -7,7 +7,7 @@ import './AuthBox.css'
 function AuthBox (props) {
 
     const { value:username, bind:bindUserName, reset:resetUserName } = useInput('');
-    // const { value:email, bind:bindEmail, reset:resetEmail } = useInput('');
+    const { value:email, bind:bindEmail, reset:resetEmail } = useInput('');
     const { value:password, bind:bindpassword, reset:resetPassword } = useInput('');
 
 
@@ -31,10 +31,6 @@ function AuthBox (props) {
                 axios({
                     method: 'post',
                     url:`/accounts/login/`,
-                    // params: {csrfmiddlewaretoken : Cookies.get('csrftoken'),
-                    //         login : {username},
-                    //         password: {password}
-                    //         },
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
@@ -44,6 +40,8 @@ function AuthBox (props) {
                     })
                     .then(res => {
                         console.log(res)
+                        resetUserName();
+                        resetPassword();
                     })
                     .catch(res => {
                         console.log('post error')
@@ -52,13 +50,6 @@ function AuthBox (props) {
             .catch(res => {
                 console.log('post error')
             })
-
-        // console.log({firstName})
-        // console.log({email})
-        // console.log({password})
-        // resetFirstName();
-        // resetEmail();
-        // resetPassword();
     }
 
     const signup = (event) => {
@@ -84,6 +75,8 @@ function AuthBox (props) {
                     })
                     .then(res => {
                         console.log(res)
+                        resetUserName();
+                        resetPassword();
                     })
                     .catch(res => {
                         console.log('post error')
@@ -94,12 +87,6 @@ function AuthBox (props) {
                 console.log('post error')
             })
 
-        // console.log({firstName})
-        // console.log({email})
-        // console.log({password})
-        // resetFirstName();
-        // resetEmail();
-        // resetPassword();
     }
 
     const logout = (event) => {
@@ -116,27 +103,27 @@ function AuthBox (props) {
             })
             .then(res => {
                 console.log('logged out')
+                resetUserName();
+                resetPassword();
             })
             .catch(res => {
                 console.log('post error')
             })
-
-        // console.log({firstName})
-        // console.log({email})
-        // console.log({password})
-        // resetFirstName();
-        // resetEmail();
-        // resetPassword();
     }
+
+    const checkifvalid = () => {
+        console.log('changed')
+    }
+
 
     return (
         <div className='signup-container'>
             <h3>Sign up now!</h3>
             <form className="signup-form" onSubmit={handleSubmit} > 
             
-                <input className='form-input' {...bindUserName} type="text" placeholder='Username'/>
-                {/* <input className='form-input' {...bindEmail} type="email" placeholder='Email'/> */}
-                <input className='form-input' {...bindpassword} type="password" placeholder='Password'/>
+                <input className='form-input' {...bindUserName} autoComplete='off' onChangeCapture={checkifvalid} type="text" placeholder='Username'/>
+                <input className='form-input' {...bindEmail} type="email" placeholder='Email'/>
+                <input className='form-input' {...bindpassword} autoComplete='off' type="password" placeholder='Password'/>
                 <div
                  className='form-btns'>
                      <input className='btn' type="submit" onClick={login} value="Login" />

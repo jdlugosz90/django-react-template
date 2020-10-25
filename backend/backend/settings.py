@@ -185,6 +185,11 @@ AUTHENTICATION_BACKENDS = [
     
 ]
 
+# This is used for testing emails that will be sent out by server
+# REMOVE THIS DURNING PRODUCTION
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
 SITE_ID = 1
 
 # Provider specific settings
