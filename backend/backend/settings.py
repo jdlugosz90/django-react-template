@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Allows communication between React & Django
     'rest_framework',
+    # Package that provides token based authentication
+    'rest_framework.authtoken',
+    # Package to provide SPA endpoints
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -125,10 +129,17 @@ STATIC_URL = '/static/'
 
 # --------- ADDITIONAL SETTINGS NOT INCLUDED BY DEFUALT --------
 
+# Provides token & JWT based authentication
 REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
+    ),
+}
+
+# Configure django-rest-framework-simplejwt to use the 
+# Authorization: JWT <access_token> header:
+SIMPLE_JWT = {
+   'AUTH_HEADER_TYPES': ('JWT',),
 }

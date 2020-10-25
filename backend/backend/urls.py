@@ -28,6 +28,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # DRF urls
     path('api/', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls'))
+    # djoser urls
+    path('auth/', include('djoser.urls')),
+    # Token based authentication url
+    path('auth/', include('djoser.urls.authtoken')),
+    # JWT based authentication url
+    path('auth/', include('djoser.urls.jwt')),
 
 ]

@@ -1,5 +1,5 @@
 # project-template
-A template consisting of multipe setups using Django and React with DRF api
+    A template consisting of multipe setups using Django and React with DRF api
 
 
 # SECRET_KEY
@@ -7,10 +7,14 @@ A template consisting of multipe setups using Django and React with DRF api
 Generate a secret key and store it in config.py.
 After that you can migrate your database
 
+# djoser branch
+    Builds on the default template by integrating djoser. It is a library that seems like it will play better with SPA
+
+
 
 # django-allauth branch
 
-Builds on the default template by integrating django-allauth
+    Builds on the default template by integrating django-allauth
 
 # react-login branch 
 
