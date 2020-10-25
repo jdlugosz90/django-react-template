@@ -79,7 +79,7 @@ function AuthBox (props) {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     data: 
-                        'csrfmiddlewaretoken=' + Cookies.get('csrftoken') + '&login='+ {username} + '&password=' + {password}
+                    'csrfmiddlewaretoken=' + Cookies.get('csrftoken') + '&login='+ bindUserName.value + '&password=' + bindpassword.value
                     ,
                     })
                     .then(res => {
@@ -101,6 +101,34 @@ function AuthBox (props) {
         // resetEmail();
         // resetPassword();
     }
+
+    const logout = (event) => {
+        event.preventDefault();
+
+        axios({
+            method: 'post',
+            url:`/accounts/logout/`,
+            data: 
+            'csrfmiddlewaretoken=' + Cookies.get('csrftoken'),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            })
+            .then(res => {
+                console.log('logged out')
+            })
+            .catch(res => {
+                console.log('post error')
+            })
+
+        // console.log({firstName})
+        // console.log({email})
+        // console.log({password})
+        // resetFirstName();
+        // resetEmail();
+        // resetPassword();
+    }
+
     return (
         <div className='signup-container'>
             <h3>Sign up now!</h3>
@@ -116,7 +144,9 @@ function AuthBox (props) {
                 </div>
                 
             </form>
-            <p>{username}</p>
+            <div className='form-btns'>
+                     <input className='btn' type="submit" onClick={logout} value="Logout" />
+                </div>
         </div>
       );
 }
