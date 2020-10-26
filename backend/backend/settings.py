@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from .config import KEY 
+from .config import KEY, EMAIL_PSD
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     # Package to provide SPA endpoints
     'djoser',
+    #Project apps
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,8 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Use this for the frontend build
+        # 'DIRS': [os.path.join(BASE_DIR, 'build')], 
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,8 +133,19 @@ STATIC_URL = '/static/'
 
 # --------- ADDITIONAL SETTINGS NOT INCLUDED BY DEFUALT --------
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'build/static')
+]
+
+# Location to the static root folder. STATIC_URL  is just the url to this folder
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Provides token & JWT based authentication
 REST_FRAMEWORK = {
+    #All views by default require user to be authenticated
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.IsAuthenticated'
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -143,3 +158,42 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
 }
+
+# Djoser optional settings
+DJOSER = {
+    # Tells djoser we are using email authentication
+    'LOGIN_FIELD': 'email',
+    # User has to confirm password
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    # If True, change username endpoints will send confirmation email to user.
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    # If True, change password endpoints will send confirmation email to user.
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    # If True, register or activation endpoint will send confirmation email to user.
+    'SEND_CONFIRMATION_EMAIL': True,
+    # If True, you need to pass re_new_password to /users/set_password/ endpoint, to validate password equality.
+    'SET_PASSWORD_RETYPE': True,
+    # URL to your frontend password reset page. It should contain {uid} and {token} placeholders, e.g. #/password-reset/{uid}/{token}. You should pass uid and token to reset password confirmation endpoint.
+    # THIS IS REQUIRED
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
+    # The link the user receives in the email
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {
+        'user_create': 'accounts.serializers.UserCreateSerializer',
+        'user': 'accounts.serializers.UserCreateSerializer',
+        'user_delete': 'accounts.serializers.UserDeleteSerializer',
+    }
+
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST =  'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jacob.dlugosz@gmail.com'
+EMAIL_HOST_PASSWORD = 'EMAIL_PSD'
+EMAIL_USE_TLS = True
+
+# Tells django to use this custom user model defined in accounts
+AUTH_USER_MODEL = 'accounts.UserAccount'

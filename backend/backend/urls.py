@@ -14,20 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-# DRF classes
-from rest_framework import routers
-from .views import UserViewSet
-
-# DRF Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # DRF urls
-    path('api/', include(router.urls)),
     # djoser urls
     path('auth/', include('djoser.urls')),
     # Token based authentication url
@@ -36,3 +28,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
 
 ]
+
+urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]
