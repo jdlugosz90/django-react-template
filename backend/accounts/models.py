@@ -19,6 +19,22 @@ class UserAccountManager(BaseUserManager):
 
         return user
 
+    def create_superuser(self, email, name, password=None):
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        # Normalizing the email means it turns Jacob.Dlugosz@gmail.com to jacob.dlugosz@gmail.com
+        email = self.normalize_email(email)
+        user = self.model(email=email, name=name,)
+        user.is_admin = True
+        user.is_staff = True
+        user.is_superuser = True
+        # set_password just takes the normal text password and hashes it for security
+        user.set_password(password)
+        user.save()
+
+        return user
+
 
 
 
