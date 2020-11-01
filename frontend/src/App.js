@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import AuthBox from  './components/auth-box/AuthBox'
+import AuthBox from './components/containers/AuthBox/AuthBox'
 
 function App() {
   return (

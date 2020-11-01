@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Allows React to make cross-site HTTP requests
+    'corsheaders',
     # Allows communication between React & Django
     'rest_framework',
     # Package that provides token based authentication
@@ -49,6 +51,10 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # ^^^ Allows React to make cross-site HTTP requests ^^^
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -140,6 +147,10 @@ STATICFILES_DIRS = [
 # Location to the static root folder. STATIC_URL  is just the url to this folder
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
 # Provides token & JWT based authentication
 REST_FRAMEWORK = {
     #All views by default require user to be authenticated
