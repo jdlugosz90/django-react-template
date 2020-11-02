@@ -6,27 +6,18 @@ import Register from './Register'
 
 const AuthBox = (props) => {
 
+    // used to set which component is active
     const [component, setComponent] = useState('login')
 
-    
 
-    const [userData, setUserData] = useState({
-        email: '',
-        name: '',
-        isLoggedIn: false,
-
-    });
-
-    
     if (component === 'login'){
         // Show login component
         return(
-            
-    
            <div className='auth-container'>
                <h3>Login</h3>
-                <Login />
+                <Login updateUserData={props.updateUserData}/>
                 <p> Need and account? <button onClick={() => setComponent('register')}>Create Account</button></p>
+                
             </div>
         );
     }
