@@ -1,9 +1,9 @@
-import React, {useState } from 'react';
+import React, {useReducer, useState } from 'react';
 import axios from "axios";
 
 
 
-const Register = () => {
+const Register = (props) => {
 
     const [formData, setFormData] = useState({
         email: '',
@@ -11,6 +11,8 @@ const Register = () => {
         password: '',
         re_password: '',
     });
+
+    const [formError, setFormError] = useState('')
 
     // This is called destructuring. It cleans up the code by simplifying the variables. 
     // A short example is user.email = email after destructuring
@@ -24,6 +26,7 @@ const Register = () => {
 
     const onSubmit = e => {
         e.preventDefault();
+        if(password == re_password){
         const config = {
             headers: {
                 'Content-Type': 'application/json'
@@ -32,13 +35,28 @@ const Register = () => {
         const body = JSON.stringify({email, name, password, re_password});
         axios.post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config)
         .then(function(res){
-            console.log(res)
+            // Clear the register form data if successful
+            setFormData({...formData, [name]: ''});
+            setFormData({...formData, [email]: ''});
+            setFormData({...formData, [password]: ''});
+            setFormData({...formData, [re_password]: ''});
+            // Set the auth box to the login componenet
+            props.setComponent('login')
+
+
             // set a global variable with the login status and the login response
             // Look at 24:56 on the video mentions in notes
         }).catch(function(res){
-            console.log(res)
-        })
-        ;
+            console.log(res.response.data)
+            if (res.response.data['email'] != undefined) {
+                setFormError(res.response.data['email'])
+            } else {
+                setFormError(res.response.data['password'])
+            }
+        });
+    } else {
+        setFormError('Passwords do not match!')
+    }
         
     };
 
@@ -90,6 +108,10 @@ const Register = () => {
             required
             />
             </div>
+            <div className='error-msg'>
+            <p>{formError}</p>
+            </div>
+            
             {/* Action buttons */}
             <div
              className='form-btns'>

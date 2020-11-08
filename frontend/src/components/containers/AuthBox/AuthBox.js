@@ -26,7 +26,7 @@ const AuthBox = (props) => {
         return(
            <div className='auth-container'>
                <h3>Register</h3>
-                <Register />
+                <Register setComponent={setComponent}/>
                 <p> Have an account? <button onClick={() => setComponent('login')}>Login</button></p>
             </div>
         );
