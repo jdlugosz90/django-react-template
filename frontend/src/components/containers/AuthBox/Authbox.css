@@ -59,3 +59,12 @@ h3 {
     border-style: none;
     background-color: rgb(62, 238, 238);
 } 
+
+.error-msg{
+    border-style: solid;
+    border-radius: 10px;
+    border-color: rgb(255, 32, 32);
+    background-color: rgb(240, 138, 138);
+    padding: 5px;
+
+}

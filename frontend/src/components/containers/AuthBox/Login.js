@@ -8,6 +8,15 @@ const Login = (props) => {
     password: "",
   });
 
+  
+  const [formError, setFormError] = useState()
+
+  const showFormError = (error) => {
+    const errorDiv = <div className='error-msg'><p>{error}</p></div>
+    setFormError(errorDiv)
+  }
+
+
   // This is called destructuring. It cleans up the code by simplifying the variables.
   // A short example is user.email = email after destructuring
   const { email, password } = formData;
@@ -19,6 +28,9 @@ const Login = (props) => {
     });
   };
 
+  const onFocus = (e) => {
+    setFormError('')
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -51,6 +63,11 @@ const Login = (props) => {
           .then(res =>  {
             props.updateUserData('name', res.data.name)
             props.updateUserData('email', res.data.email)
+            setFormData((formData) => ({...formData, 'email': ''}));
+            setFormData((formData) => ({...formData, 'password': ''}));
+            setFormError('')
+            Array.from(document.querySelectorAll("input")).forEach(
+              input => (input.value = ""))
 
           })
           .catch(err => {
@@ -58,10 +75,10 @@ const Login = (props) => {
           });
       })
       .catch(err =>  {
-        console.log(err.response.data.detail);
+        showFormError(err.response.data.detail)
       });
   };
-
+  
 
   return (
     <form className="auth-form" onSubmit={(e) => onSubmit(e)}>
@@ -74,6 +91,7 @@ const Login = (props) => {
           name="email"
           value={email}
           onChange={(e) => onChange(e)}
+          onFocus={(e) => onFocus(e)}
           required
         />
         {/* Password input field */}
@@ -84,10 +102,13 @@ const Login = (props) => {
           name="password"
           value={password}
           onChange={(e) => onChange(e)}
+          onFocus={(e) => onFocus(e)}
           minLength="6"
           required
         />
-      </div>{" "}
+      </div>
+      {formError}
+      {" "}
       {/* Action buttons */}
       <div className="form-btns">
         <button className="btn" type="submit">
