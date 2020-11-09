@@ -1,7 +1,9 @@
-import logo from './logo.svg';
+
 import './App.css';
-import AuthBox from './components/containers/AuthBox/AuthBox'
+import Home from './components/containers/Home/Home'
+import Profile from './components/containers/Profile/Profile'
 import { useState } from 'react';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
 function App() {
 
@@ -11,9 +13,10 @@ function App() {
     refresh: '',
     email: '',
     name: '',
-    isLoggedIn: false,
+    isAuthenticated: false,
   })
 
+    console.log(userData['isAuthenticated'])
   // Passed to the Login componet so it can set global userData
   const updateUserData = (name, value) => {
     setUserData((userData) => ({
@@ -25,13 +28,27 @@ function App() {
   
   return (
     <div className="App">
-      <p> Name: {userData.name}<br/>
-          email: {userData.email}<br/>
-          access: {userData.access}<br/>
-          refresh: {userData.refresh}<br/>
-          logged in: {userData.isLoggedIn}<br />
-      </p>
-      <AuthBox userData={userData} updateUserData={updateUserData}/>
+      <BrowserRouter>
+          <Switch>
+            <Route 
+              exact path='/' 
+              render={(props) => 
+                // Props final destination Login.js & Register.js
+                <Home {...props} userData={userData} updateUserData={updateUserData} />
+              } 
+            />
+
+            <Route 
+              exact path='/profile' 
+              render={(props) => 
+                // Props final destination Login.js & Register.js
+                <Profile {...props} userData={userData} updateUserData={updateUserData} />
+              } 
+            />
+
+          </Switch>
+      </BrowserRouter>
+      
     </div>
   );
 }

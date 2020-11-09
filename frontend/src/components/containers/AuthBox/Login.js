@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import App from "../../../App";
+import { Redirect } from "react-router-dom";
 
 const Login = (props) => {
   const [formData, setFormData] = useState({
@@ -50,7 +50,7 @@ const Login = (props) => {
         // Set the JWT tokens in memory. State is lifted to App.js
         props.updateUserData('access', res.data.access)
         props.updateUserData('refresh', res.data.refresh)
-        props.updateUserData('isLoggedIn', true)
+        props.updateUserData('isAuthenticated', true)
         const config = {
           headers: {
             "Content-Type": "application/json",
@@ -80,48 +80,51 @@ const Login = (props) => {
   };
   
 
-  return (
-    <form className="auth-form" onSubmit={(e) => onSubmit(e)}>
-      <div className="auth-input">
-        {/* Email input field  */}
-        <input
-          className="form-input"
-          type="email"
-          placeholder="Email"
-          name="email"
-          value={email}
-          onChange={(e) => onChange(e)}
-          onFocus={(e) => onFocus(e)}
-          required
-        />
-        {/* Password input field */}
-        <input
-          className="form-input"
-          type="password"
-          placeholder="Password"
-          name="password"
-          value={password}
-          onChange={(e) => onChange(e)}
-          onFocus={(e) => onFocus(e)}
-          minLength="6"
-          required
-        />
-      </div>
-      {formError}
-      {" "}
-      {/* Action buttons */}
-      <div className="form-btns">
-        <button className="btn" type="submit">
+  // Redirect the user to profile if authenticated
+  if (props.userData['isAuthenticated']){
+    return <Redirect to='/Profile'/>
+  }else{
+      return (
+        <form className="auth-form" onSubmit={(e) => onSubmit(e)}>
+          <div className="auth-input">
+            {/* Email input field  */}
+            <input
+              className="form-input"
+              type="email"
+              placeholder="Email"
+              name="email"
+              value={email}
+              onChange={(e) => onChange(e)}
+              onFocus={(e) => onFocus(e)}
+              required
+            />
+            {/* Password input field */}
+            <input
+              className="form-input"
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={password}
+              onChange={(e) => onChange(e)}
+              onFocus={(e) => onFocus(e)}
+              minLength="6"
+              required
+            />
+          </div>
+          {formError}
           {" "}
-          Login{" "}
-        </button>{" "}
-      </div>
-    </form>
-  );
-};
+          {/* Action buttons */}
+          <div className="form-btns">
+            <button className="btn" type="submit">
+              {" "}
+              Login{" "}
+            </button>{" "}
+          </div>
+        </form>
+      );
+    };
 
-// const mapStateToProps = state = => ({
-//     //is authenticated?
-// })
+}
+
 
 export default Login;

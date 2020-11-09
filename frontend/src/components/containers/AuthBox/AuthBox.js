@@ -7,21 +7,23 @@ import Register from './Register'
 const AuthBox = (props) => {
 
     // used to set which component is active
-    const [component, setComponent] = useState('login')
+    const [VisableComponent, setComponent] = useState('login')
 
 
-    if (component === 'login'){
+    if (VisableComponent === 'login'){
         // Show login component
         return(
            <div className='auth-container'>
                <h3>Login</h3>
-                <Login updateUserData={props.updateUserData}/>
+                {/* Props from Home.js */}
+                <Login userData={props.userData} updateUserData={props.updateUserData}/>
                 <p> Need and account? <button onClick={() => setComponent('register')}>Create Account</button></p>
+                <p> Forgot password? <button onClick={() => setComponent('passwordReset')}>Reset password</button></p>
                 
             </div>
         );
     }
-    if (component === 'register'){
+    if (VisableComponent === 'register'){
         // Show register component
         return(
            <div className='auth-container'>
@@ -32,6 +34,15 @@ const AuthBox = (props) => {
         );
     }
 
+    if (VisableComponent === 'passwordReset'){
+        // Show password reset email sent component
+        return(
+           <div className='auth-container'>
+               <h3>Email sent</h3>
+                <p> Go back to login <button onClick={() => setComponent('login')}>Login page</button></p>
+            </div>
+        );
+    }
 }
 
 export default AuthBox;
