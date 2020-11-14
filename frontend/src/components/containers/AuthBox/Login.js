@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+
 
 const Login = (props) => {
+
+  // Component state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
-  
+  // This is called destructuring. It cleans up the code by simplifying the variables.
+  // A short example is user.email = email after destructuring
+  const { email, password } = formData;
   const [formError, setFormError] = useState()
+
+  useEffect(() => {
+    console.log('is authenticated ' + props.userData['isAuthenticated'])
+  },[props.userData['isAuthenticated']])
+
 
   const showFormError = (error) => {
     const errorDiv = <div className='error-msg'><p>{error}</p></div>
     setFormError(errorDiv)
   }
-
-
-  // This is called destructuring. It cleans up the code by simplifying the variables.
-  // A short example is user.email = email after destructuring
-  const { email, password } = formData;
 
   const onChange = (e) => {
     setFormData({
@@ -32,8 +35,37 @@ const Login = (props) => {
     setFormError('')
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+    try{
+      let JWT =  await createJWT();
+      localStorage.setItem('access', JWT.data.access);
+      localStorage.setItem('refresh', JWT.data.refresh);
+      let user = await getUserData(JWT.data.access);
+      clearForm();
+      updateState(JWT, user);
+    } catch (error){
+      showFormError(error.response.data.detail)
+    } 
+  };
+  
+  const clearForm = () => {
+    setFormData((formData) => ({...formData, 'email': ''}));
+    setFormData((formData) => ({...formData, 'password': ''}));
+    setFormError('')
+    Array.from(document.querySelectorAll("input")).forEach(
+      input => (input.value = ""))
+  };
+
+  const updateState = (JWT, user) => {
+    props.updateUserData('access', JWT.data.access)
+    props.updateUserData('refresh', JWT.data.refresh)
+    props.updateUserData('isAuthenticated', true)
+    props.updateUserData('name', user.data.name)
+    props.updateUserData('email', user.data.email)
+  };
+
+  const createJWT = () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -43,47 +75,23 @@ const Login = (props) => {
       email,
       password,
     });
-
-    axios
+    return axios
       .post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config)
-      .then(res => {
-        // Set the JWT tokens in memory. State is lifted to App.js
-        props.updateUserData('access', res.data.access)
-        props.updateUserData('refresh', res.data.refresh)
-        props.updateUserData('isAuthenticated', true)
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "JWT " + res.data.access,
-            Accept: "application/json",
-          },
-        };
-        axios
-          .get(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config)
-          .then(res =>  {
-            props.updateUserData('name', res.data.name)
-            props.updateUserData('email', res.data.email)
-            setFormData((formData) => ({...formData, 'email': ''}));
-            setFormData((formData) => ({...formData, 'password': ''}));
-            setFormError('')
-            Array.from(document.querySelectorAll("input")).forEach(
-              input => (input.value = ""))
+  }
 
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(err =>  {
-        showFormError(err.response.data.detail)
-      });
-  };
-  
+  const getUserData = async (accessToken) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "JWT " + accessToken,
+        Accept: "application/json",
+      },
+    };
+    return await axios
+      .get(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config)
+  }
 
-  // Redirect the user to profile if authenticated
-  if (props.userData['isAuthenticated']){
-    return <Redirect to='/Profile'/>
-  }else{
+
       return (
         <form className="auth-form" onSubmit={(e) => onSubmit(e)}>
           <div className="auth-input">
@@ -124,7 +132,7 @@ const Login = (props) => {
       );
     };
 
-}
+
 
 
 export default Login;

@@ -70,6 +70,7 @@ const Register = (props) => {
     //is user authenticated?
     //redirectr to home page
     return ( 
+
         <form className="auth-form" onSubmit={e => onSubmit(e)} >
             <div className="auth-input">
             {/* Name input field  */}
@@ -131,8 +132,5 @@ const Register = (props) => {
      );
 }
 
-// const mapStateToProps = state = => ({
-//     //is authenticated?
-// })
 
 export default Register;

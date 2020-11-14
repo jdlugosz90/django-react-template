@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from .config import KEY, EMAIL_PSD
+from . import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = KEY
+SECRET_KEY = config.KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # Package that provides token based authentication
     'rest_framework.authtoken',
+    # Needed to rotate JWT refresh tokens and blacklist the old ones
+    'rest_framework_simplejwt.token_blacklist',
     # Package to provide SPA endpoints
     'djoser',
     #Project apps
@@ -168,6 +170,8 @@ REST_FRAMEWORK = {
 # Authorization: JWT <access_token> header:
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
+   'ROTATE_REFRESH_TOKENS': True,
+   'BLACKLIST_AFTER_ROTATION': True,
 }
 
 # Djoser optional settings
@@ -201,9 +205,9 @@ DJOSER = {
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'jmd.mytravelguide@gmail.com'
-EMAIL_HOST_PASSWORD = 'hpbzpvxfgkahtzdg' #past the key or password app here
+EMAIL_HOST = config.EMAIL_HOST
+EMAIL_HOST_USER = config.EMAIL_USR
+EMAIL_HOST_PASSWORD = config.EMAIL_PSD
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'default from email'
