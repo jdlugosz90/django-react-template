@@ -87,7 +87,7 @@ const Login = (props) => {
         Accept: "application/json",
       },
     };
-    return await axios
+    return axios
       .get(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config)
   }
 
