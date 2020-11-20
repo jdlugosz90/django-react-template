@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, } from "react";
 import axios from "axios";
+import useAuthenticate from './Hooks/useAuthenticate'
+
+
+
 
 
 const Login = (props) => {
@@ -9,20 +13,28 @@ const Login = (props) => {
     email: "",
     password: "",
   });
+
   // This is called destructuring. It cleans up the code by simplifying the variables.
   // A short example is user.email = email after destructuring
   const { email, password } = formData;
   const [formError, setFormError] = useState()
+  const {status, error, Authenticate} = useAuthenticate()
 
+
+  // Show error if there is one from useAuthenticate
   useEffect(() => {
-    console.log('is authenticated ' + props.userData['isAuthenticated'])
-  },[props.userData['isAuthenticated']])
+    if(status === 'ERROR'){
+      const errorDiv = <div className='error-msg'><p>{error}</p></div>
+      setFormError(errorDiv)
+    }
+   },[error])
 
-
-  const showFormError = (error) => {
-    const errorDiv = <div className='error-msg'><p>{error}</p></div>
-    setFormError(errorDiv)
-  }
+  //  Clear the form if status is OK from useAuthenticate
+   useEffect(() => {
+    if(status === 'OK'){
+      clearForm();
+    }
+   },[status])
 
   const onChange = (e) => {
     setFormData({
@@ -35,18 +47,9 @@ const Login = (props) => {
     setFormError('')
   };
 
-  const onSubmit = async (e) => {
+  const onSubmit =  (e) => {
     e.preventDefault();
-    try{
-      let JWT =  await createJWT();
-      localStorage.setItem('access', JWT.data.access);
-      localStorage.setItem('refresh', JWT.data.refresh);
-      let user = await getUserData(JWT.data.access);
-      clearForm();
-      updateState(JWT, user);
-    } catch (error){
-      showFormError(error.response.data.detail)
-    } 
+    Authenticate(email, password);
   };
   
   const clearForm = () => {
@@ -57,27 +60,14 @@ const Login = (props) => {
       input => (input.value = ""))
   };
 
-  const updateState = (JWT, user) => {
-    props.updateUserData('access', JWT.data.access)
-    props.updateUserData('refresh', JWT.data.refresh)
-    props.updateUserData('isAuthenticated', true)
-    props.updateUserData('name', user.data.name)
-    props.updateUserData('email', user.data.email)
-  };
+  // const updateState = (JWT, user) => {
+  //   props.updateUserData('access', JWT.data.access)
+  //   props.updateUserData('refresh', JWT.data.refresh)
+  //   props.updateUserData('isAuthenticated', true)
+  //   props.updateUserData('name', user.data.name)
+  //   props.updateUserData('email', user.data.email)
+  // };
 
-  const createJWT = () => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const body = JSON.stringify({
-      email,
-      password,
-    });
-    return axios
-      .post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config)
-  }
 
   const getUserData = async (accessToken) => {
     const config = {

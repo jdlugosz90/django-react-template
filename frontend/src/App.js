@@ -5,6 +5,7 @@ import Profile from './components/containers/Profile/Profile'
 import { useState } from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
+
 function App() {
 
   // Used to store JWT access token in memory where it is safe!
@@ -28,6 +29,7 @@ function App() {
   
   return (
     <div className="App">
+    
       <BrowserRouter>
           <Switch>
             <Route 
@@ -45,9 +47,10 @@ function App() {
                 <Profile {...props} userData={userData} updateUserData={updateUserData} />
               } 
             />
-
           </Switch>
       </BrowserRouter>
+    
+
       
     </div>
   );

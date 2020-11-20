@@ -2,6 +2,8 @@ import React, { Component, useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import AuthBox from '../AuthBox/AuthBox'
 
+
+
 const Home = (props) => {
 
     console.log('home render')
